@@ -40,10 +40,24 @@ func shiftLetter(letter string, shift int) string {
 //
 // Returns
 // - the message, shifted appropriately
-func caesarCipher(message string, shift int) string {
-	// Replace this with your code
-	return ""
+func shiftLetter(letter string, shift int) string {
+    if letter == " " {
+        return " "
+    }
+    
+    base := int('A')
+    newChar := ((int(letter[0])-base + shift) % 26) + base
+    return string(rune(newChar))
 }
+
+func caesarCipher(message string, shift int) string {
+    result := ""
+    for _, letter := range message {
+        result += shiftLetter(string(letter), shift)
+    }
+    return result
+}
+
 
 // Shift by letter
 //
@@ -63,8 +77,14 @@ func caesarCipher(message string, shift int) string {
 // Returns:
 // - the letter, shifted appropriately
 func shiftByLetter(letter string, letterShift string) string {
-	// Replace this with your code
-	return ""
+    if letter == " " {
+        return " "
+    }
+    
+    base := int('A')
+    shift := int(letterShift[0]) - base
+    newChar := ((int(letter[0]) - base + shift) % 26) + base
+    return string(rune(newChar))
 }
 
 // Vigenere cipher
@@ -86,8 +106,23 @@ func shiftByLetter(letter string, letterShift string) string {
 // Returns:
 // - the message, shifted appropriately
 func vigenereCipher(message string, key string) string {
-	// Replace this with your code
-	return ""
+    result := ""
+    keyIndex := 0
+    keyLength := len(key)
+    
+    for _, char := range message {
+        if char == ' ' {
+            result += " "
+            continue
+        }
+        
+        shift := int(key[keyIndex]) - int('A')
+        result += shiftByLetter(string(char), string(key[keyIndex]))
+        
+        keyIndex = (keyIndex + 1) % keyLength
+    }
+    
+    return result
 }
 
 // Scytale cipher
@@ -137,8 +172,21 @@ func vigenereCipher(message string, key string) string {
 // Returns:
 // - the message, encoded appropriately.
 func scytaleCipher(message string, shift int) string {
-	// Replace this with your code
-	return ""
+    // Ensure the message length is a multiple of shift
+    if len(message)%shift != 0 {
+        message += strings.Repeat("_", shift - len(message)%shift)
+    }
+    
+    // Prepare a slice to hold the encoded message
+    encoded := make([]rune, len(message))
+    
+    // Apply the scytale cipher logic
+    for i := 0; i < len(message); i++ {
+        encoded[i] = rune(message[(i/shift) + (len(message)/shift)*(i%shift)])
+    }
+    
+    return string(encoded)
+}
 }
 
 // Scytale decipher
