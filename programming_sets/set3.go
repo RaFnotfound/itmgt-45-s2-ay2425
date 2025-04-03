@@ -26,7 +26,34 @@ func main() {
 // Returns:
 // - "follower" if fromMember follows toMember; "followed by" if fromMember is followed by toMember; "friends" if fromMember and toMember follow each other; "no relationship otherwise."
 func relationshipStatus(fromMember string, toMember string, socialGraph map[string]map[string]interface{}) string {
-	// Replace this with your code
+    follows := false
+    followedBy := false
+
+    // Check if fromMember follows toMember
+    if followers, exists := socialGraph[fromMember]; exists {
+        if _, follows = followers[toMember]; follows {
+            follows = true
+        }
+    }
+
+    // Check if toMember follows fromMember
+    if followers, exists := socialGraph[toMember]; exists {
+        if _, followedBy = followers[fromMember]; followedBy {
+            followedBy = true
+        }
+    }
+
+    // Determine relationship status
+    if follows && followedBy {
+        return "friends"
+    } else if follows {
+        return "follower"
+    } else if followedBy {
+        return "followed by"
+    } else {
+        return "no relationship"
+    }
+}
 	return ""
 }
 
@@ -46,7 +73,51 @@ func relationshipStatus(fromMember string, toMember string, socialGraph map[stri
 // Returns:
 // - the symbol of the winner, or "NO WINNER" if there is no winner.
 func ticTacToe(board [][]string) string {
-	// Replace this with your code
+    size := len(board)
+    
+    // Check rows and columns
+    for i := 0; i < size; i++ {
+        if checkLine(board[i]) {
+            return board[i][0]
+        }
+        col := make([]string, size)
+        for j := 0; j < size; j++ {
+            col[j] = board[j][i]
+        }
+        if checkLine(col) {
+            return col[0]
+        }
+    }
+    
+    // Check diagonals
+    mainDiag := make([]string, size)
+    antiDiag := make([]string, size)
+    for i := 0; i < size; i++ {
+        mainDiag[i] = board[i][i]
+        antiDiag[i] = board[i][size-i-1]
+    }
+    if checkLine(mainDiag) {
+        return mainDiag[0]
+    }
+    if checkLine(antiDiag) {
+        return antiDiag[0]
+    }
+    
+    return "NO WINNER"
+}
+
+func checkLine(line []string) bool {
+    first := line[0]
+    if first == "" {
+        return false
+    }
+    for _, cell := range line {
+        if cell != first {
+            return false
+        }
+    }
+    return true
+}
 	return ""
 }
 
@@ -68,6 +139,24 @@ func ticTacToe(board [][]string) string {
 // Returns:
 // - the time that it will take the shuttle to travel from firstStop to secondStop
 func eta(firstStop string, secondStop string, routeMap map[string]map[string]int) int {
-	// Replace this with your code
+    if firstStop == secondStop {
+        return 0
+    }
+    
+    totalTime := 0
+    currentStop := firstStop
+    
+    for {
+        nextStops := routeMap[currentStop]
+        for nextStop, time := range nextStops {
+            totalTime += time
+            currentStop = nextStop
+            if currentStop == secondStop {
+                return totalTime
+            }
+            break
+        }
+    }
+
 	return 0
 }
